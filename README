@@ -1,4 +1,4 @@
-Functions to verify and evaluate WebVision dataset
+# Functions to verify and evaluate WebVision dataset
 
 * Dataset Specification is in config.py.
 * Commandline is util.py.
