@@ -1,4 +1,5 @@
-# Functions to verify and evaluate WebVision dataset
+# WebVision
+This package provides simple functions to verify and evaluate WebVision dataset. [WebVision Workshop](http://www.vision.ee.ethz.ch/webvision/workshop.html "WebVision Workshop") will be held in conjunction with CVPR 2017.
 
 * Dataset Specification is in config.py.
 * Commandline is util.py.
