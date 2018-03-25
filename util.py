@@ -11,6 +11,7 @@ if __name__ == '__main__':
     parser.add_argument('--validate', help='increase output verbosity', action="store_true")
     parser.add_argument('--eval_val', help='evaluate validation dataset')
     parser.add_argument('--top_k', help='top k evaluation', type=int)
+    parser.add_argument('--class_average', help='average metric per class', action="store_true")
     args = parser.parse_args()
     data_info = config.LoadInfo()
     if args.validate:
@@ -23,5 +24,6 @@ if __name__ == '__main__':
             top_k = args.top_k
         merged_df = eval.MergeValFile(data_info, args.eval_val)
         print ("Top %d accurarcy is %0.3f."%(
-            top_k, eval.TopK(merged_df, top_k)))
+            top_k, eval.TopK(merged_df, top_k, 
+            True if args.class_average else False)))
         

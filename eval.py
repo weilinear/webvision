@@ -22,7 +22,13 @@ def MergeValFile(info, validation_filename):
         config._ParseTextFile(validation_filename))
 
 # Metrics
-def TopK(df, top_k, evalset='val'):
+def TopKPerClass(df, columns):
+    label_correct = np.min(
+        np.abs((df[columns].sub(
+            df.label, axis='index')).values), axis=1)
+    return float(sum(label_correct==0)) / len(label_correct)
+
+def TopK(df, top_k, class_average, evalset='val'):
     '''
     Eval based on the top K accuracy
     '''
@@ -31,9 +37,13 @@ def TopK(df, top_k, evalset='val'):
     eval_set = df[df.type == evalset]
     # Check the set label is not null
     assert eval_set.label.isnull().sum() == 0, 'Null value exists in label.'
-    label_correct = np.min(
-        np.abs((eval_set[top_k_columns].sub(
-            eval_set.label, axis='index')).values), axis=1)
-    return float(sum(label_correct==0)) / len(label_correct)
-    
+    if class_average:
+        acc_per_class = []
+        for grp_id, grp in eval_set.groupby('label'):
+            acc = TopKPerClass(grp, top_k_columns)
+            acc_per_class.append(acc)
+            print ("Group %s : %f"%(grp_id, acc))
+        return np.mean(acc_per_class)
+    else:
+        return TopKPerClass(eval_set, top_k_columns)
     

@@ -2,18 +2,25 @@
 
 from __future__ import print_function
 import os
-import  pandas as pd
+import pandas as pd
+import re
 from os.path import join, isdir, basename, isfile
 from glob import glob
 
 # Global configuration
-DATA_BASE = '/Users/wel/Downloads/webvision_release_sample/'
+DATA_BASE = '/tmp/webvision_2018_release_sample/'
 INFO = join(DATA_BASE, 'info')
 DATA_SOURCE = ['google', 'flickr']
 TRAIN_FOLDER = join(DATA_BASE, 'train_images_256')
 VAL_FOLDER = join(DATA_BASE, 'val_images_256')
 TEST_FOLDER = join(DATA_BASE, 'test_images_256')
 META_FOLDER = join(DATA_BASE, 'meta')
+
+def _ExtractClassName(image_id):
+    if re.match('.*/q\d{5}/.*', image_id):
+        return int(image_id.split('/')[1][1:])
+    else:
+        return -1;
 
 def _ParseTextFile(filename, columns=None):
     data = pd.read_csv(filename,
@@ -61,6 +68,8 @@ def LoadInfo():
     val_df['image_path'] = val_df['image_id'].map(
         lambda x : join(VAL_FOLDER, x))
     data_info =pd.concat([training_df, val_df, test_df])
+    data_info['class_id'] = \
+        data_info['image_id'].map(_ExtractClassName)
     return data_info
     
 def ValidateIntegrity(info):
