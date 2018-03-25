@@ -24,8 +24,6 @@ def MergeValFile(info, validation_filename):
                     config._ParseTextFile(validation_filename))
 
 # Metrics
-
-
 def TopKPerClass(df, columns):
     label_correct = np.min(
         np.abs((df[columns].sub(
